@@ -1,2 +1,2 @@
 # IdTron
-App for conecting with SummaTRON-API
+App for connecting with SummaTRON-API
