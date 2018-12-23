@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>IdTron. Identification API.</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+	<!--<link href="css/font-awesome.min.css" rel="stylesheet">-->
+    <link href='css/bootstrap.min.css' rel='stylesheet' />
+	<link href='css/summatron.css' rel='stylesheet' />
+	
+	<script src='js/jquery.min.js'></script>
+    <script src='js/bootstrap.min.js'></script>
+	<script src='js/funciones.js'></script>
+	<script src='js/storage2.js'></script> 
+	<script>
+	if (esMovil())	
+	{ document.write("<script src='cordova.js'><\/script>");	}
+	</script>
+
+</head>
+<body>
+<div id="cabecera"></div>
+	<div class="container" style="margin-top:100px;">
+		<center><h3>Registry:</h3>
+		<div id="wait" style="display:block">
+			<img src="img/wait.gif">
+		</div>
+		<div id="lista" style="display:none">
+			<table><tbody id ="zona">
+			</tbody></table>
+		</div>
+		</center>	
+   </div>
+</div>
+<div id="pie"></div>
+<script>
+	$("#cabecera").load ("cabecera.html");
+	$("#pie").load ("pie.html");
+
+
+function LeerRegisters (sCuenta)
+{
+	sCTASummaTRON = "TFQwLDzUvEc99ktd3TvUc9g3uATGmX2fS7";
+	sZona="";
+	sLista=[];
+	$.ajaxSetup({async: false});
+	$.get( "https://wlcyapi.tronscan.org/api/transfer?from="+sCuenta+"&token=SummaTRON",function(resp) {
+		obj = resp;
+		for (i in obj.data)
+		{
+			sTo = obj.data[i].transferToAddress;
+			sLista[sTo] = sTo;
+		}
+	});
+	for (sL in sLista)
+	{
+		$.get( "https://wlcyapi.tronscan.org/api/transfer?from="+sL+"&to="+sCTASummaTRON+"&token=SummaTRON",function(resp) {
+			obj = resp;
+			sHash = obj.data[0].transactionHash;
+			$.get( "https://wlcyapi.tronscan.org/api/transaction?hash="+sHash,function(resp) {
+				obj1 = resp;
+				sZona = "<tr><td style='font-size: 4vw;color:darkblue'>" + "[" + obj1.data[0].data + "] - "+ sL + "</td></tr>";
+				$("#zona").append(sZona);
+				$("#wait").css("display", "none");	
+				$("#lista").css("display","block");	
+			});
+		});
+	}
+
+
+}
+</script>
+</body>
+</html>
+

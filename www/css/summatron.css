@@ -1,0 +1,76 @@
+input, textarea {
+        -webkit-user-select: auto !important;
+        -khtml-user-select: auto !important;
+        -moz-user-select: auto !important;
+        -ms-user-select: auto !important;
+        -o-user-select: auto !important;
+        user-select: auto !important;  
+}
+br {
+   display: block;
+   margin: 2px 0;
+   line-height:2;
+   content: " ";
+}
+.slabel {
+    font-size:16px;
+    font-weight:400;
+	color:darkblue;
+    margin:5px;
+    overflow:visible;
+    padding:5px;
+    text-align:center;
+	display:inline-block
+}
+.sinput {
+    font-size:4vw;
+    font-weight:400;
+	color:darkblue;
+    margin:3px;
+    overflow:visible;
+    padding:3px;
+	display:inline-block;
+	border: 1px solid black;
+    border-radius: 5px;
+}
+div.a {
+	width: 320px; 
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+div.a:hover {
+overflow: visible;
+}
+span.Ellipse{
+	font-size: 4vw;
+	color:darkblue;
+	white-space: nowrap; 
+	width: 320px; 
+	overflow: hidden;
+	text-overflow: ellipsis; 
+	display: inline-block;
+}
+input.Ellipse{
+font-size:4vm;
+white-space: nowrap; 
+width: 320px; 
+overflow: hidden;
+text-overflow: ellipsis; 
+display: inline-block;
+}
+.btnsumma{
+display:inline-block;
+padding:4px 5px;
+height:64px;
+width:64px;
+white-space: nowrap;
+color: #333;
+background-color: transparent;
+text-align: center;
+line-height: 0;
+border: 0;
+outline: none;
+font-size: 20px;
+background: none;
+/*border-radius: 20px;*/
+}

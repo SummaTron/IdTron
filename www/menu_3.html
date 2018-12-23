@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html>
+    <head> 
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>IdTron. Identification API.</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+	<!--<link href="css/font-awesome.min.css" rel="stylesheet">-->
+    <link href='css/bootstrap.min.css' rel='stylesheet' />
+	
+	<script src='js/jquery.min.js'></script>
+    <script src='js/bootstrap.min.js'></script>
+	<script src="js/QRScanner.js"></script>
+    <script src='js/script.js' type='text/javascript'></script>
+	<script src='js/funciones.js'></script> 
+	<script src='js/storage3.js'></script> 
+
+	<script>
+	if (esMovil())	
+	{ document.write("<script src='cordova.js'><\/script>");	}
+	</script>
+
+</head>
+<body>
+	<div id="cabecera"></div>
+	<div class="container" id="middle" style="margin:auto;margin-top:100px;">
+			<center>
+			<span><label id="IdTron" style="font-size:12vw;color:darkblue;font-weight: bold">IdTron  </label><label style="font-size:6vw;color:darkblue">&nbsp;&nbsp;1.0.8</label></span><br>	
+			<img id="scanButton" src="img/logo_gris.png" width="200" height="200" >
+			<h3 id="Resultado">Press the icon</h3>
+			</center>		
+			<div>
+				<span style="background-color:white;margin:2;padding:0">
+				<!--<button class="btn btn-default" type="button"  id="scanButton" style="border:0;margin:2;padding:0;color:darkblue;">
+				<i class="fa fa-qrcode fa-2x" ></i></button></span>-->
+				<input type="hidden" id="QR"  />
+				<input type="textarea" id="datos" style="display:none">
+			</div>
+			<br>
+			<br><br>
+			<input type = "hidden" id="Consola">
+
+   </div>
+</div>
+<div id="pie"></div>
+<script>
+
+	$("#cabecera").load ("cabecera.html");
+	$("#pie").load ("pie.html");
+
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+const doSomething = async () => {
+	await sleep(10000);
+	d = new Date();
+	$("#scanButton").attr("src","img/logo_gris.png?"+d.getTime());
+	$("#Resultado").text("Press the icon");
+}
+
+function Identificar()
+{
+	var sEncrypted="";
+	var sTipo = "";
+	var oData={};
+	$("#scanButton").attr("src","img/logo_amarillo.png");
+	$("#Resultado").text("Sending...");
+	document.body.style.backgroundColor="white";
+	oDatos = JSON.parse($("#QR").val());
+	
+	readFile(fE);
+	sD = JSON.parse(sJSON);
+	sCuenta = sD.Account;
+	privateKey= sD.PrivateKey;
+	if (oDatos.token == "IdTronix")
+	{
+		sData = Ascii2Hex(oDatos.data);
+		sTipo = "Identification Correct";
+		sFrom = do58Decode(sCuenta);
+		sTo = do58Decode(oDatos.address);
+		sToken = Ascii2Hex(oDatos.token);
+		sAmount = "1";
+		sTransfer = '{"owner_address":"'+sFrom+'", "to_address": "'+ sTo +'", "asset_name": "'+ sToken+'", "amount": '+sAmount+'}';
+		$.post('https://api.trongrid.io/wallet/transferasset', sTransfer, function(data) 
+			{
+			//alert(data)
+			data = data.substr(0,data.length-3) + ',"data":"'+sData+'"}}';
+			$.post('https://api.trongrid.io/wallet/gettransactionsign','{"transaction" : '+data+ ',"privateKey": "'+privateKey +'"}', function(data1) {
+				//alert(data1)
+				$.post('https://api.trongrid.io/wallet/broadcasttransaction', data1, function (data2) {
+					//alert(data2);
+					oDatos = JSON.parse(data2);
+					if (oDatos.result)
+					{
+						$("#scanButton").attr("src","img/logo_verde.png");
+						$("#Resultado").text(sTipo);
+					}
+					else
+					{
+						$("#scanButton").attr("src","img/logo_rojo.png");
+						$("#Resultado").text("An error has occurred");
+					}
+					doSomething();
+				});
+			});
+		})
+	}
+	else
+	{	
+		if (oDatos.token == "SummaTRON-R")
+		{
+			sTipo = "Register Correct";
+			if (sD.Id) 		{oData["id"] = sD.id;}
+			if (sD.Name) 	{oData["name"] = sD.name;}
+			if (sD.Surname) {oData["surname"] = sD.surname;}
+			if (sD.Email)	{oData["email"] = sD.email;}
+			sObjeto = JSON.stringify(oData)
+			sObjeto = sObjeto.split(" ").join("$");
+
+			sEncrypt = encodeURI("https://www.summatron.com/tron/jsp/cifrar.jsp?Objeto='"+sObjeto+"'&Clave='"+oDatos.pubkey+"'");		
+			//$.ajaxSetup({async: false});
+			$.get(sEncrypt, function(resp) {
+				sEncrypted = resp.trim();
+				sTo = pubkey2AddressHex(oDatos.pubkey);
+				var oTotalData= {"data":oDatos.data,"cipher":sEncrypted};
+				sData = Ascii2Hex(JSON.stringify(oTotalData));
+				sFrom = do58Decode(sCuenta);
+				sToken = Ascii2Hex("SummaTRON");
+				sAmount = "1";
+				sTransfer = '{"owner_address":"'+sFrom+'", "to_address": "'+ sTo +'", "asset_name": "'+ sToken+'", "amount": '+sAmount+'}';
+				$.post('https://api.trongrid.io/wallet/transferasset', sTransfer, function(data) 
+					{
+					//alert(data);
+					data = data.substr(0,data.length-3) + ',"data":"'+sData+'"}}';
+					$.post('https://api.trongrid.io/wallet/gettransactionsign','{"transaction" : '+data+ ',"privateKey": "'+privateKey +'"}', function(data1) {
+						//alert(data1);
+						$.post('https://api.trongrid.io/wallet/broadcasttransaction', data1, function (data2) {
+							//alert(data2);
+							$("#Consola").val(data2);
+							oDatos = JSON.parse(data2);
+							if (oDatos.result)
+							{
+								$("#scanButton").attr("src","img/logo_verde.png");
+								$("#Resultado").text(sTipo);
+							}
+							else
+							{
+								$("#scanButton").attr("src","img/logo_rojo.png");
+								$("#Resultado").text("An error has occurred");
+							}
+							doSomething();
+						});
+					});
+				})
+			});
+		}
+		else
+		{		
+			sTipo = "Sign Correct";
+			oData["id"] = sD.id;
+			oData["name"] = sD.name;
+			oData["surname"] = sD.surname;
+			oData["md5"] = oDatos.md5;
+			sEncrypted = JSON.stringify(oData);
+			sTo = do58Decode(oDatos.address);
+			oTotalData= {"data":oDatos.data,"cipher":sEncrypted};
+			sData = Ascii2Hex(encodeURI(JSON.stringify(oTotalData)));
+			
+			sFrom = do58Decode(sCuenta);
+			sToken = Ascii2Hex("SummaTRON");
+			sAmount = "1";
+			sTransfer = '{"owner_address":"'+sFrom+'", "to_address": "'+ sTo +'", "asset_name": "'+ sToken+'", "amount": '+sAmount+'}';
+			$.post('https://api.trongrid.io/wallet/transferasset', sTransfer, function(data) 
+				{
+				//alert(data);
+				data = data.substr(0,data.length-3) + ',"data":"'+sData+'"}}';
+				$.post('https://api.trongrid.io/wallet/gettransactionsign','{"transaction" : '+data+ ',"privateKey": "'+privateKey +'"}', function(data1) {
+					//alert(data1);
+					$.post('https://api.trongrid.io/wallet/broadcasttransaction', data1, function (data2) {
+						//alert(data2);
+						$("#Consola").val(data2);
+						oDatos = JSON.parse(data2);
+						if (oDatos.result)
+						{
+							$("#scanButton").attr("src","img/logo_verde.png");
+							$("#Resultado").text(sTipo);
+						}
+						else
+						{
+							$("#scanButton").attr("src","img/logo_rojo.png");
+							$("#Resultado").text("An error has occurred");
+						}
+						doSomething();
+					});
+				});
+			})
+		}
+
+	}
+}
+</script>
+</body>
+</html>
+

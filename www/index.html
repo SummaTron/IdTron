@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>IdTron. Identification API.</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+	<!--<link href="css/font-awesome.min.css" rel="stylesheet">-->
+    <link href='css/bootstrap.min.css' rel='stylesheet' />
+	<link href='css/summatron.css' rel='stylesheet' />
+	
+	<script src='js/jquery.min.js'></script>
+    <script src='js/bootstrap.min.js'></script>
+	<script src="js/QRCTA.js"></script>
+    <script src='js/script.js' type='text/javascript'></script>
+	<script src='js/funciones.js'></script>
+	<script src='js/storage0.js'></script> 
+	<script>
+	if (esMovil())	
+	{ document.write("<script src='cordova.js'><\/script>");	}
+	</script>
+</head>
+<body >
+<div id="cabecera" ></div>
+	<div  style="margin-top:100px">
+	<center>
+	<span><label id="IdTron" style="font-size:12vw;color:darkblue;font-weight: bold">IdTron  </label><label style="font-size:6vw;color:darkblue">&nbsp;&nbsp;1.0.8</label></span><br>	
+	</center>
+	</div>
+	<div id="Registro" class="container" style="display:none;margin:auto;">
+		<br>
+		<center>
+		<div id="Importar">
+			<button id="bImportar" class="btn btn-primary btn-lg" onclick="MostrarImportar()">Import Private Key</button>
+			<div id="ZonaImportar" style="display:none;">
+				<br>
+				<label><b>Private Key</b></label>
+				<input id="iPrivateKey" class="Ellipse" size="36" onchange="ImportarCuenta()">
+				<span id="scanButton" class="fas fa-qrcode fa-4x" aria-hidden="true" style="margin-left:10px;margin-top:10px;"></span>
+				</input>
+				<div id="ZonaResultadoImportar" style="display:none">
+					<br>
+					<label><b>Address</b></label>
+					<input id="iCuenta" class="Ellipse" size="36" readonly></input>
+					<br><br>
+					<button id="bFinImportar" class="btn btn-primary btn-lg" onclick="IrAMenu3()">Start</button>
+				</div>
+			</div>
+			<br><br><label id="O"><b>O</b></label><br><br>
+		</div>
+		<div id="Crear">
+			<button id="bCrear" class="btn btn-primary btn-lg" onclick="CrearCuenta()">Create Account</Button>
+			<div id="ZonaCrear" style="display:none">
+				<br>
+				<label><b>Private Key</b></label>
+				<input id="cPrivateKey" class="Ellipse" size="36" readonly style="font-size:3vm"></input>
+				<br>
+				<label><b>Address</b></label>
+				<input id="cCuenta"  class="Ellipse" size="36" readonly style="font-size:3vm"></input>
+				<br><br>
+				<button id="bFinCrear" class="btn btn-primary btn-lg" onclick="IrAMenu3()">Start</button>
+			</div>
+		</div>
+		</center>
+	</div>
+</div>
+<script>
+	$("#cabecera").load ("cabecera.html");
+
+function IrAMenu3()
+{
+	window.location.replace("menu_3.html");
+}	
+function MostrarImportar()
+{
+	$("#Crear").css("display","none");
+	$("#bImportar").css("display","none");
+	$("#ZonaImportar").css("display","block");
+	$("#O").css("display","none");
+}
+function ImportarCuenta()
+{
+	sPrivateKey = $("#iPrivateKey").val();
+	sCuenta = prikey2Address(sPrivateKey);
+	$("#iCuenta").val(sCuenta);
+	$("#ZonaResultadoImportar").css("display","block");
+	$("#scanButton").css("display","none");
+	var sDatos='{"PrivateKey":"'+sPrivateKey+'","Account":"'+sCuenta+'"}';
+//	writeFile(fE, new Array(1024).join(' '));
+	writeFile(fE, sDatos);
+	readFile(fE);
+	Copy("");
+}
+function CrearCuenta()
+{
+	$("#Crear").css("display","block");
+	$("#bCrear").css("display","none");
+	$("#Importar").css("display","none");
+	$("#O").css("display","none");
+	$.post('https://api.trongrid.io/wallet/generateaddress', function(data) {
+		console.log(data);
+		oData = JSON.parse(data);
+		sPrivateKey = oData.privateKey;
+		sCuenta = oData.address;
+		sCuenta64 = oData.hexAddress;
+		$("#cPrivateKey").val(sPrivateKey);
+		$("#cCuenta").val(sCuenta);
+		$("#ZonaCrear").css("display","block");
+		var sDatos='{"PrivateKey":"'+sPrivateKey+'","Account":"'+sCuenta+'"}';
+//		writeFile(fE, new Array(1024).join(' '));
+		writeFile(fE, sDatos);
+		$.get("https://www.summatron.com/api/jsp/enviar.jsp?Cuenta='"+sCuenta+"'&Cuenta64='"+sCuenta64+"'", function(resp) {
+			obj = JSON.parse(resp);
+		});
+	});
+}
+</script>
+
+</body >
+</html>
