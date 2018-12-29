@@ -24,7 +24,6 @@ var app = {
             }
             if (status.authorized) {
                 // W00t, you have camera access and the scanner is initialized.
-				Copy("");
 				window.QRScanner.scan(displayContents);
                 window.QRScanner.show();
             } else if (status.denied) {
@@ -38,7 +37,8 @@ var app = {
             }
         }
 
-        function displayContents(err, text){
+        function displayContents(err, text)
+		{
 			window.QRScanner.destroy();
 			document.body.style.backgroundColor="white";
 			$("#Registro").css("display","block");
@@ -47,10 +47,16 @@ var app = {
                 // an error occurred, or the scan was canceled (error code `6`)
             } else {
                 // The scan completed, display the contents of the QR code:
-				
-				$("#iPrivateKey").val(text);
-				ImportarCuenta();
-            }
+
+					if (text.length==64)
+					{
+						$("#iPrivateKey").val(text);
+						ImportarCuenta();   
+					}
+					else
+					{alert("PrivateKey length must be 64 byte");}
+				}
+            
         }
     }
 };

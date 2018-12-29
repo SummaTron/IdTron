@@ -1,6 +1,10 @@
 function Copy(sCampo)
 {
-	cordova.plugins.clipboard.copy($("#"+sCampo).val());
+	cordova.plugins.clipboard.copy($("#"+sCampo).val(),	alert("Copied Data"));
+}
+function Copy0()
+{
+	cordova.plugins.clipboard.copy("");
 }
 function Paste(sCampo)
 {
@@ -180,57 +184,6 @@ function PAD(sTexto,nLong)
 		{sRetorno =sRetorno+ "&nbsp;";} 
 	}
 return sRetorno;
-}
-
-function greyscale(src,coordenadas)
-{ //Creates a canvas element with a grayscale version of the color image
-var nc=coordenadas.split(";");
-var nx=0, ny=0, nw=800, nh=1024;
-var supportsCanvas = !!document.createElement('canvas').getContext;
-	if (supportsCanvas) {
-		var canvas = document.createElement('canvas'), 
-		canvassal = document.createElement('canvas'), 
-		context = canvas.getContext('2d'), 
-		contextsal = canvassal.getContext('2d'), 
-		imageData, px, length, i = 0, gray, 
-		img = new Image();
-		img.src = src;
-		if ( (nc[2] == 0) && (nc[3] == 0))
-		{
-			nx = 0;
-			ny = 0;
-			nw = img.width;
-			nh = img.height;
-		}
-		else
-		{
-			
-			nx = nc[0];
-			ny = nc[1];
-			nw = nc[2];
-			nh = nc[3];
-		}
-		canvas.width = img.width;
-		canvas.height = img.height;
-		canvassal.width = nw;
-		canvassal.height = nh;
-		context.drawImage(img, 0, 0, canvas.width, canvas.height);
-		imageData = context.getImageData(nx, ny, nw, nh);
-	
-		px = imageData.data;
-		length = px.length;
-		
-		for (; i < length; i += 4) {
-			gray = px[i] * .3 + px[i + 1] * .59 + px[i + 2] * .11;
-			px[i] = px[i + 1] = px[i + 2] = gray;
-		}
-				
-		contextsal.putImageData(imageData, 0, 0);
-		return canvassal.toDataURL();
-
-	} else {
-		return src;
-	}
 }
 
 function Euro(number)

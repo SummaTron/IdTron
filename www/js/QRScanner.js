@@ -11,23 +11,30 @@ var app = {
     onDeviceReady: function() {
 		
         document.querySelector("#scanButton").addEventListener("click", function() {
-
-			cordova.plugins.clipboard.paste(function (text) 
-			{ 
-				if (text.indexOf("data")>-1)
-				{
-					$("#QR").val(text);
-					Copy(""); // Borra el contenido del clipboad para evitar que repita el Envio del {}
-					Identificar();
-				}
-				else
-				{
-					document.body.style.backgroundColor="transparent";
-					$("#middle").css("display","none");
-					window.QRScanner.scan(displayContents);
-					window.QRScanner.show();
-				}
-			});
+			try
+			{
+				cordova.plugins.clipboard.paste(function (text) 
+				{ 	
+					if (typeof text == "string") 
+					{
+						if (text.indexOf("data")>-1)
+						{
+							$("#QR").val(text);
+							cordova.plugins.clipboard.copy("");
+							Identificar();
+						}
+						else
+						{
+							Camara();
+						}
+					}
+					else
+					{
+						Camara();
+					}
+				}, Camara );
+			}
+			catch { Camara(); };
         });
 
         function onDone(err, status){
@@ -47,14 +54,21 @@ var app = {
                 // ask again" box.) We can ask again at the next relevant opportunity.
             }
         }
+		function Camara ()
+		{
+			document.body.style.backgroundColor="transparent";
+			$("#middle").css("display","none");
+			window.QRScanner.scan(displayContents);
+			window.QRScanner.show();
+		}
 
         function displayContents(err, text){
 			window.QRScanner.destroy();
 			document.body.style.backgroundColor="white";
 			$("#middle").css("display","block");
             if(err){
-				alert(JSON.stringify(err));
-                // an error occurred, or the scan was canceled (error code `6`)
+				alert("Camera:" + JSON.stringify(err));
+				// an error occurred, or the scan was canceled (error code `6`)
             } else {
                 // The scan completed, display the contents of the QR code:
 				
