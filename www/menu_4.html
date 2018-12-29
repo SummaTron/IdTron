@@ -31,6 +31,12 @@
 			<table><tbody id ="zona">
 			</tbody></table>
 		</div>
+		<div id="detalle" style="display:none">			
+			<table><tbody id ="zonaD">
+			</tbody></table>
+			<center><button class="btn btn-primary" id="volver"  onclick="CerrarDetalle()">Back</button></center>
+		</div>
+		
    </div>
 </div>
 <div id="pie"></div>
@@ -42,27 +48,59 @@ function LeerTransfers (sCuenta)
 {
 	sZona="";
 	sLista="[";
-	$.get( "https://wlcyapi.tronscan.org/api/transfer?sort=-timestamp&from="+sCuenta+"&token=IdTronix",function(resp) {
+	$.get( "https://wlcyapi.tronscan.org/api/transfer?sort=-timestamp&from="+sCuenta,function(resp) {
 		var obj = resp;
 		j=-1;
 		for (i in obj.data)
 		{
 			sTo = obj.data[i].transferToAddress;
+			sHash = obj.data[i].transactionHash;
 			var fecha = new Date(obj.data[i].timestamp);
 			sFecha = fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+fecha.getFullYear()+" "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds();
-			sLista +='{"Fecha":"'+sFecha+'","Cuenta":"'+sTo+'"},';
+			sLista +='{"Fecha":"'+sFecha+'","Cuenta":"'+sTo+'","Hash":"'+sHash+'"},';
 		}
 		sLista = sLista.substring(0,sLista.length-1)+"]";
 		oLista = JSON.parse(sLista);
 		nTope = ((oLista.length>6)? 6: oLista.length);
 		for (i=0;i<nTope;i++)
 		{
-			sZona += "<tr><td style='font-size: 4vw;'>" + oLista[i].Fecha + ": <br><span style='color:darkblue'>" + oLista[i].Cuenta + "</span></td></tr>";
+			sClick = "DetalleTransfer('"+oLista[i].Hash+"')";
+			sZona += "<tr><td style='font-size: 4vw;'>" + oLista[i].Fecha + ": <br><span style='color:darkblue' onclick="+sClick+">" + oLista[i].Cuenta + "</span></td></tr>";
 		}
 		$("#zona").append(sZona);
 		$("#wait").css("display", "none");	
 		$("#lista").css("display","block");	
 	});
+}
+function DetalleTransfer(sTransfer)
+{
+	$("#lista").css("display","none");
+	$("#detalle").css("display","block");	
+	$("#zonaD").html("");
+	sZona="";
+	$.get( "https://wlcyapi.tronscan.org/api/transfer?hash="+sTransfer,function(resp) {
+		var obj = resp;
+		var fecha = new Date(obj.data[0].timestamp);
+		sFecha = fecha.getDate()+"-"+(fecha.getMonth()+1)+"-"+fecha.getFullYear()+" "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds();
+		sFrom = obj.data[0].transferFromAddress;
+		sTo = obj.data[0].transferToAddress;
+		sStatus = obj.data[0].confirmed;
+		sCantidad = obj.data[0].amount;
+		sToken = obj.data[0].tokenName;
+		sFee = obj.data[0].fee;
+		sZona += "<tr><td style='font-size: 4.5vw;'>Fecha: <span style='color:darkblue;font-size:4vw'>" +sFecha + "<span></td></tr>";
+		sZona += "<tr><td style='font-size: 4.5vw;'>Origen:<br><span style='color:darkblue;font-size:4vw'>" +sFrom + "<span></td></tr>";
+		sZona += "<tr><td style='font-size: 4.5vw;'>Destino:<br><span style='color:darkblue;font-size:4vw'>" + sTo + "<span></td></tr>";
+		sZona += "<tr><td style='font-size: 4.5vw;'>Confirmado: <span style='color:darkblue;font-size:4vw'>" + sStatus + "<span></td></tr>";
+		sZona += "<tr><td style='font-size: 4.5vw;'>Cantidad: <span style='color:darkblue;font-size:4vw'>" + sCantidad + "<span></td></tr>";
+		sZona += "<tr><td style='font-size: 4.5vw;'>Token: <span style='color:darkblue;font-size:4vw'>" + sToken + "<span></td></tr>";
+		$("#zonaD").append(sZona);
+	});
+}
+function CerrarDetalle()
+{
+	$("#lista").css("display","block");
+	$("#detalle").css("display","none");	
 }
 </script>
 </body>

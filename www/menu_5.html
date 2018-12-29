@@ -9,7 +9,7 @@
 	<!--<link href="css/font-awesome.min.css" rel="stylesheet">-->
     <link href='css/bootstrap.min.css' rel='stylesheet' />
 	<link href='css/summatron.css' rel='stylesheet' />
-	   
+
 	<script src='js/jquery.min.js'></script>
     <script src='js/bootstrap.min.js'></script>
 	<script src='js/funciones.js'></script>
@@ -22,22 +22,42 @@
 </head>
 <body>
 <div id="cabecera"></div>
-	<div style="margin:auto;margin-top:100px;">
-			<center>
-			<h5 >Address</h5>
-			<span class="Ellipse" id ="Cuenta" onclick="Copy('Cuenta')"></span>
-			<div id="qrcta" onclick="Copy('Cuenta')" style="border:1px;border-color:darkblue"></div>
-			<br>
-			<h5 >Private Key</h5>
-			<span class="Ellipse" id ="PrivateKey" onclick ="Copy('PrivateKey')"></span>
-			<div id="qrpk" onclick ="Copy('PrivateKey')" style="border:1px;border-color:darkblue"></div>
-			</center>
+	<div class="container" style="margin:auto;margin-top:100px;">
+		<center>	
+		<h5 >Address</h5>
+		<textarea rows="1" cols="40" id ="Cuenta" onclick="Copy('Cuenta')" style="font-size:3.5vw"></textarea>
+		<div id="qrcta" style="border:1px;border-color:darkblue"></div>
+		<br>
+		<h5 >Private Key</h5>
+		<textarea rows="2" cols="40" id ="PrivateKey" onclick="Copy('PrivateKey')" style="font-size:3.5vw"></textarea>
+		<div id="qrpk" style="border:1px;border-color:darkblue"></div>
+		</center>
+
+		<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h3 id="myModalLabel"><font color="red">Very Important!</font></h3>
+			  </div>
+			  <div class="modal-body">
+				Make a snapshot of this page or copy the address and PrivateKey, and keep it in a secure place.
+				<br><br>
+				If you lose or change the mobile phone, you can restore the account form this PrivateKey.
+				<br><br>
+				All the companies where you will register are going to have this address.
+			  </div>
+			  <div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
    </div>
 </div>
 <div id="pie"></div>
 <script>
 
-	$("#cabecera").load ("cabecera.html");
+	$("#cabecera").load ("cabecera5.html");
 	$("#pie").load ("pie.html");
 	
 </script>

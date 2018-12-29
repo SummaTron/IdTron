@@ -45,31 +45,32 @@ function LeerRegisters (sCuenta)
 	sCTASummaTRON = "TFQwLDzUvEc99ktd3TvUc9g3uATGmX2fS7";
 	sZona="";
 	sLista=[];
-	$.ajaxSetup({async: false});
+	
+
 	$.get( "https://wlcyapi.tronscan.org/api/transfer?from="+sCuenta+"&token=SummaTRON",function(resp) {
 		obj = resp;
 		for (i in obj.data)
 		{
-			sTo = obj.data[i].transferToAddress;
+			sTo = obj.data[i].transferToAddress;	
 			sLista[sTo] = sTo;
 		}
-	});
-	for (sL in sLista)
-	{
-		$.get( "https://wlcyapi.tronscan.org/api/transfer?from="+sL+"&to="+sCTASummaTRON+"&token=SummaTRON",function(resp) {
-			obj = resp;
-			sHash = obj.data[0].transactionHash;
-			$.get( "https://wlcyapi.tronscan.org/api/transaction?hash="+sHash,function(resp) {
-				obj1 = resp;
-				sZona = "<tr><td style='font-size: 4vw;color:darkblue'>" + "[" + obj1.data[0].data + "] - "+ sL + "</td></tr>";
-				$("#zona").append(sZona);
-				$("#wait").css("display", "none");	
-				$("#lista").css("display","block");	
+
+		for (sL in sLista)
+		{
+			$.get( "https://wlcyapi.tronscan.org/api/transfer?from="+sL+"&to="+sCTASummaTRON+"&token=SummaTRON",function(resp) {
+				obj = resp;
+				sHash = obj.data[0].transactionHash;
+				$.get( "https://wlcyapi.tronscan.org/api/transaction?hash="+sHash,function(resp) {
+					obj1 = resp;
+					sZona = "<tr><td style='font-size: 4vw;color:darkblue'>" + "[" + obj1.data[0].data.split("%2F").join("/") + "] - "+ sL + "</td></tr>";
+					$("#zona").append(sZona);
+					
+				});
 			});
-		});
-	}
-
-
+		}
+		$("#wait").css("display", "none");	
+		$("#lista").css("display","block");	
+	});
 }
 </script>
 </body>
