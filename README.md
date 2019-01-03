@@ -7,9 +7,9 @@ IdTron can import a TRON account or create a new one and automaticaly the accoun
 
 It allows to perform 4 operations:
 - Identify
-- To register
-- Sign documents
-- Link TRON accounts
+- To register personal data in forms
+- Signature of PDF documents
+- Link TRON accounts for AVA project.
 
 For the registration process, incorporate an option, My Data, to be able to incorporate the typical data of the registration forms.
 
