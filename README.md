@@ -14,3 +14,5 @@ It allows to perform 4 operations:
 For the registration process, incorporate an option, My Data, to be able to incorporate the typical data of the registration forms.
 
 In Options, you can save the account and the private key in order to make a backup in case the mobile is changed or lost.
+
+You can download the Android version from https://play.google.com/store/apps/details?id=org.apache.cordova.IdTron&hl=es
