@@ -1,5 +1,5 @@
 # IdTron
-App for connecting with SummaTRON-API
+DApp for connecting with SummaTRON-API
 IdTron want to be a Universal Identification System , using the TRON account like ID.
 SummaTRON-API is a project for replacing the user/password, the captchas, SMS and other 2FA systems.
 
