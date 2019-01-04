@@ -11,7 +11,8 @@ It allows to perform 4 operations:
 - Signature of PDF documents
 - Link TRON accounts for AVA project.
 
-These operation are executed clicking the central icon of Identify screen, also if you are using the smartphone browse, you can copy the QR information clicking over the QR at the website and paste clicking over the IdTron icon, in this case the camera is not activated because get the data from the paste event. You can see same video examples at www.summatron.com
+These operation are executed clicking the central icon of Identify screen, also if you are using the smartphone browse, you can copy the QR information clicking over the QR at the website and paste clicking over the IdTron icon, in this case the camera is not activated because get the data from the paste event. <br>
+You can see same video examples at www.summatron.com
 
 For the registration process, incorporate an option, My Data, to be able to incorporate the typical data of the registration forms.
 In Options, you can save the account and the private key in order to make a backup in case the mobile is changed or lost.
@@ -19,4 +20,5 @@ In Options, you can save the account and the private key in order to make a back
 
 
 You can download the Android version from https://play.google.com/store/apps/details?id=org.apache.cordova.IdTron&hl=es
+<br>
 You can download the IOs version from -- in validation process --.
