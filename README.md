@@ -12,6 +12,9 @@ It allows to perform 4 operations:
 - Link TRON accounts for AVA project.
 
 These operation are executed clicking the central icon of Identify screen, also if you are using the smartphone browse, you can copy the QR information clicking over the QR at the website and paste clicking over the IdTron icon, in this case the camera is not activated because get the data from the paste event. <br>
+<br>
+With IdTron you can get access to a desktop browser scanning the QR code, on an SmartTV scanning the QR code, on a smartphone or tablet browse using copy/paste,  or between 2 DApp in smartphone.
+<br>
 You can see same video examples at www.summatron.com
 
 For the registration process, incorporate an option, My Data, to be able to incorporate the typical data of the registration forms.
