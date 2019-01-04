@@ -24,4 +24,4 @@ In Options, you can save the account and the private key in order to make a back
 
 You can download the Android version from https://play.google.com/store/apps/details?id=org.apache.cordova.IdTron&hl=es
 <br>
-You can download the IOs version from -- in validation process --.
+You can download the iOS version from https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1447147357&mt=8
