@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html>
-    <head> 
+    <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,10 +8,11 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 	<!--<link href="css/font-awesome.min.css" rel="stylesheet">-->
     <link href='css/bootstrap.min.css' rel='stylesheet' />
+	<link href='css/summatron.css' rel='stylesheet' />
 	
 	<script src='js/jquery.min.js'></script>
     <script src='js/bootstrap.min.js'></script>
-	<script src="js/QRScanner.js"></script>
+	<script src="js/QR.js"></script>
     <script src='js/script.js' type='text/javascript'></script>
 	<script src='js/funciones.js'></script> 
 	<script src='js/storage3.js'></script> 
@@ -23,10 +24,11 @@
 
 </head>
 <body>
-	<div id="cabecera"></div>
+<div id="cabecera"></div>
 	<div class="container" id="middle" style="margin:auto;margin-top:100px;">
+			<br><br>
 			<center>
-			<span><label id="IdTron" style="font-size:12vw;color:darkblue;font-weight: bold">IdTron  </label><label style="font-size:6vw;color:darkblue">&nbsp;&nbsp;1.0.11</label></span><br>	
+			<span><label id="IdTron" style="font-size:12vw;color:darkblue;font-weight: bold">IdTron  </label><label style="font-size:6vw;color:darkblue">&nbsp;&nbsp;1.0.15</label></span><br>	
 			<img id="scanButton" src="img/logo_gris.png" width="200" height="200" >
 			<h3 id="Resultado">Press the icon</h3>
 			</center>		
@@ -60,7 +62,7 @@ const doSomething = async () => {
 function Identificar()
 {
 	var sEncrypted="";
-	var sTipo = "";
+	var sTipo = "", sData="";
 	var oData={};
 	$("#scanButton").attr("src","img/logo_amarillo.png");
 	$("#Resultado").text("Sending...");
@@ -78,22 +80,24 @@ function Identificar()
 			sTipo = "Identification Correct";
 			sFrom = do58Decode(sCuenta);
 			sTo = do58Decode(oDatos.address);
-			sToken = Ascii2Hex(oDatos.token);
+			//sToken = Ascii2Hex("IdTronix");
+			sToken = Ascii2Hex("1001134");
 			sAmount = "1";
 			sTransfer = '{"owner_address":"'+sFrom+'", "to_address": "'+ sTo +'", "asset_name": "'+ sToken+'", "amount": '+sAmount+'}';
-			Transfer(sTransfer, sTipo);
+			Transfer(sTransfer, sTipo, sData);
 			break;
 		}
 	case "SummaTRON-L":
 		{
-			sData = Ascii2Hex(oDatos.data);
+			sData = Ascii2Hex("Link");
 			sTipo = "Link Correct";
 			sFrom = do58Decode(sCuenta);
 			sTo = do58Decode(oDatos.address);
-			sToken = Ascii2Hex("SummaTRON");
+			//sToken = Ascii2Hex("SummaTRON");
+			sToken = Ascii2Hex("1001069");
 			sAmount = "1";
 			sTransfer = '{"owner_address":"'+sFrom+'", "to_address": "'+ sTo +'", "asset_name": "'+ sToken+'", "amount": '+sAmount+'}';
-			Transfer(sTransfer, sTipo);
+			Transfer(sTransfer, sTipo, sData);
 			break;
 		}
 	case "SummaTRON-R":
@@ -112,10 +116,11 @@ function Identificar()
 				var oTotalData= {"data":oDatos.data,"cipher":sEncrypted};
 				sData = Ascii2Hex(JSON.stringify(oTotalData));
 				sFrom = do58Decode(sCuenta);
-				sToken = Ascii2Hex("SummaTRON");
+				//sToken = Ascii2Hex("SummaTRON");
+				sToken = Ascii2Hex("1001069");
 				sAmount = "1";
 				sTransfer = '{"owner_address":"'+sFrom+'", "to_address": "'+ sTo +'", "asset_name": "'+ sToken+'", "amount": '+sAmount+'}';
-				Transfer(sTransfer, sTipo);
+				Transfer(sTransfer, sTipo, sData);
 			});	
 			break;
 		}
@@ -131,20 +136,25 @@ function Identificar()
 			oTotalData= {"data":oDatos.data,"cipher":sEncrypted};
 			sData = Ascii2Hex(encodeURI(JSON.stringify(oTotalData)));
 			sFrom = do58Decode(sCuenta);
-			sToken = Ascii2Hex("SummaTRON");
+			//sToken = Ascii2Hex("SummaTRON");
+			sToken = Ascii2Hex("1001069");
 			sAmount = "1";
 			sTransfer = '{"owner_address":"'+sFrom+'", "to_address": "'+ sTo +'", "asset_name": "'+ sToken+'", "amount": '+sAmount+'}';
-			Transfer(sTransfer, sTipo);
+			Transfer(sTransfer, sTipo, sData);
 			break;
 		}
 	}
+
 }
-function Transfer(sTransfer, sTipo)
+function Transfer(sTransfer, sTipo, sData)
 {
 	$.post('https://api.trongrid.io/wallet/transferasset', sTransfer, function(data) 
 		{
 		//alert(data);
-		data = data.substr(0,data.length-3) + ',"data":"'+sData+'"}}';
+		npos = data.indexOf("raw_data")+10;
+		
+		data = data.substr(0,npos) + '{"data":"'+sData+'",' + data.substr(npos+1,data.length);
+		//alert(data);
 		$.post('https://api.trongrid.io/wallet/gettransactionsign','{"transaction" : '+data+ ',"privateKey": "'+privateKey +'"}', function(data1) {
 			//alert(data1);
 			$.post('https://api.trongrid.io/wallet/broadcasttransaction', data1, function (data2) {
